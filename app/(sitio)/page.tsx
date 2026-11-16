@@ -1,7 +1,7 @@
 import { Suspense } from "react";
 import Link from "next/link";
 import { prisma } from "../../lib/prisma";
-import { PILARES, SITIO } from "../../lib/sitio";
+import { FOTO_GRUPAL, HISTORIA, PILARES, REFERENTE, SITIO } from "../../lib/sitio";
 import { ordenCargo } from "../../lib/contenido";
 import Sol from "../components/Sol";
 import TarjetaNoticia from "../components/TarjetaNoticia";
@@ -84,38 +84,72 @@ function Hero() {
 
 function Manifiesto() {
   return (
-    <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 md:py-32">
-      <div className="grid gap-12 lg:grid-cols-[1.1fr_1fr] lg:gap-20">
-        <div className="revelar">
-          <p className="antetitulo mb-6 text-par-celeste-oscuro">¿Qué es el PAR en Los Charrúas?</p>
-          <h2 className="titular text-5xl md:text-7xl">
-            Un pueblo que se organiza <span className="text-par-celeste-oscuro">para crecer.</span>
-          </h2>
+    <>
+      <section className="mx-auto max-w-7xl px-4 py-24 sm:px-6 md:py-32">
+        <div className="grid items-start gap-12 lg:grid-cols-[1fr_1.1fr] lg:gap-20">
+          <div className="revelar lg:sticky lg:top-28">
+            <p className="antetitulo mb-6 text-par-celeste-oscuro">Nuestra historia</p>
+            <h2 className="titular text-5xl md:text-7xl">
+              Así construimos en <span className="text-par-celeste-oscuro">Los Charrúas</span>
+            </h2>
+            <div className="relative mt-10">
+              <img
+                src={FOTO_GRUPAL}
+                alt="El equipo del PAR en Los Charrúas"
+                loading="lazy"
+                decoding="async"
+                className="aspect-[4/3] w-full rounded-[2rem] bg-par-tinta object-cover shadow-[0_40px_80px_-40px_rgba(7,63,85,0.6)]"
+              />
+              <span className="titular absolute -bottom-5 -right-2 rotate-[-4deg] rounded-2xl bg-par-amarillo px-5 py-2 text-3xl text-par-tinta shadow-xl md:-right-5">
+                UB 238
+              </span>
+            </div>
+          </div>
+          <div className="revelar space-y-6 text-lg leading-relaxed text-par-tinta/75 md:text-xl lg:pt-14">
+            {HISTORIA.map((parrafo, i) => (
+              <p key={i} className={i === 0 ? "text-par-tinta" : ""}>
+                {parrafo}
+              </p>
+            ))}
+          </div>
         </div>
-        <div className="revelar space-y-6 text-lg leading-relaxed text-par-tinta/75 md:text-xl lg:pt-14">
-          <p>
-            El <strong className="font-bold text-par-tinta">{SITIO.espacioCompleto}</strong> es un espacio de construcción
-            colectiva que nace en Entre Ríos con la convicción de transformar la realidad a través de la acción concreta.
-          </p>
-          <p>
-            En Los Charrúas lo construimos entre vecinos: escuchando en cada barrio, sumando a los jóvenes y armando un
-            equipo que conoce el pueblo porque vive en él.
-          </p>
-        </div>
-      </div>
 
-      <div className="mt-20 grid gap-px overflow-hidden rounded-[2rem] bg-par-tinta/10 ring-1 ring-par-tinta/10 sm:grid-cols-2 lg:grid-cols-4">
-        {PILARES.map((pilar, i) => (
-          <article key={pilar.titulo} className="revelar group relative bg-par-papel p-8 transition hover:bg-white md:p-10">
-            <span className="titular text-7xl text-par-amarillo transition group-hover:text-par-celeste">
-              {String(i + 1).padStart(2, "0")}
-            </span>
-            <h3 className="titular mt-6 text-4xl">{pilar.titulo}</h3>
-            <p className="mt-4 text-par-tinta/70">{pilar.texto}</p>
-          </article>
-        ))}
-      </div>
-    </section>
+        <div className="mt-24 grid gap-px overflow-hidden rounded-[2rem] bg-par-tinta/10 ring-1 ring-par-tinta/10 sm:grid-cols-2 lg:grid-cols-4">
+          {PILARES.map((pilar, i) => (
+            <article key={pilar.titulo} className="revelar group relative bg-par-papel p-8 transition hover:bg-white md:p-10">
+              <span className="titular text-7xl text-par-amarillo transition group-hover:text-par-celeste">
+                {String(i + 1).padStart(2, "0")}
+              </span>
+              <h3 className="titular mt-6 text-4xl">{pilar.titulo}</h3>
+              <p className="mt-4 text-par-tinta/70">{pilar.texto}</p>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      {/* Referente local */}
+      <section className="relative isolate overflow-hidden bg-par-celeste py-24 md:py-32">
+        <Sol className="absolute -left-48 -top-48 -z-10 h-[40rem] w-[40rem] animate-girar text-white/15" />
+        <div className="mx-auto grid max-w-7xl items-center gap-12 px-4 sm:px-6 lg:grid-cols-[0.8fr_1.2fr] lg:gap-20">
+          <div className="revelar relative mx-auto w-full max-w-md">
+            <div className="aspect-[4/5] overflow-hidden rounded-[2rem] bg-par-tinta shadow-2xl">
+              <img src={REFERENTE.foto} alt={REFERENTE.nombre} loading="lazy" decoding="async" className="h-full w-full object-cover" />
+            </div>
+            <div className="titular absolute -bottom-6 -right-2 rotate-[-4deg] rounded-2xl bg-par-amarillo px-6 py-3 text-3xl text-par-tinta shadow-xl md:-right-6 md:text-4xl">
+              Referente
+            </div>
+          </div>
+          <div className="revelar text-par-tinta">
+            <p className="antetitulo mb-5">Conducción local</p>
+            <blockquote className="border-l-[6px] border-par-amarillo pl-6 text-2xl font-medium leading-snug md:text-3xl">
+              “{REFERENTE.cita}”
+            </blockquote>
+            <p className="titular mt-8 text-5xl md:text-6xl">{REFERENTE.nombre}</p>
+            <p className="mt-2 font-display text-lg font-bold uppercase tracking-[0.18em] text-par-tinta/70">{REFERENTE.rol}</p>
+          </div>
+        </div>
+      </section>
+    </>
   );
 }
 

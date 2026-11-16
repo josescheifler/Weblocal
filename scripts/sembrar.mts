@@ -40,12 +40,13 @@ async function main() {
     prisma.hito.createMany({
       data: [
         { titulo: "Nace el PAR en Entre Ríos", estado: "HECHO", fecha: fecha("2025-03-15"), orden: 1, descripcion: "El Peronismo Amplio Renovador se presenta en la provincia con la juventud y el territorio como banderas." },
-        { titulo: "Primer equipo en Los Charrúas", estado: "HECHO", orden: 2, descripcion: "Un grupo de vecinos y vecinas se organiza para construir el PAR en nuestro pueblo." },
-        { titulo: "Recorrida barrio por barrio", estado: "EN_CURSO", orden: 3, descripcion: "Escuchamos a cada vecino para armar las propuestas desde abajo." },
-        { titulo: "Presentación de propuestas", estado: "PROXIMO", orden: 4 },
-        { titulo: "Presentación de candidatos", estado: "PROXIMO", orden: 5 },
-        { titulo: "Capacitación de fiscales", estado: "PROXIMO", orden: 6 },
-        { titulo: "Elecciones", estado: "PROXIMO", orden: 7, descripcion: "Cuidamos cada voto, mesa por mesa." },
+        { titulo: "Recuperamos la sede de la Unidad Básica 238", estado: "HECHO", orden: 2, descripcion: "La saneamos y cancelamos años de deudas históricas: nuestra primera prueba de gestión." },
+        { titulo: "Lanzamiento oficial en el Camping Municipal", estado: "HECHO", orden: 3, descripcion: "El PAR Los Charrúas se presenta públicamente con la conducción de José Scheifler." },
+        { titulo: "Recorrida barrio por barrio", estado: "EN_CURSO", orden: 4, descripcion: "Escuchamos a familias, comerciantes, productores e instituciones para armar las propuestas desde abajo." },
+        { titulo: "Presentación de propuestas", estado: "PROXIMO", orden: 5 },
+        { titulo: "Presentación de candidatos", estado: "PROXIMO", orden: 6 },
+        { titulo: "Capacitación de fiscales", estado: "PROXIMO", orden: 7 },
+        { titulo: "Elecciones", estado: "PROXIMO", orden: 8, descripcion: "Cuidamos cada voto, mesa por mesa." },
       ],
     }),
   );
@@ -57,14 +58,14 @@ async function main() {
           eje: "TRABAJO",
           orden: 1,
           titulo: "Trabajo local para que nadie tenga que irse",
-          resumen: "Apoyar a quienes producen y emprenden en Los Charrúas, para que el trabajo y la plata queden en el pueblo.",
+          resumen: "Respaldar a las familias rurales, los comerciantes y los productores que sostienen al pueblo, para que el trabajo y la plata queden acá.",
           detalle: "Oficina municipal de empleo y capacitación en oficios\nCompras del municipio a proveedores locales\nFeria permanente de productores y emprendedores\nAcompañamiento para acceder a créditos y programas provinciales",
         },
         {
           eje: "JUVENTUD",
           orden: 2,
-          titulo: "Los jóvenes, protagonistas",
-          resumen: "Espacios, oportunidades y participación real para que los pibes y las pibas elijan quedarse.",
+          titulo: "Que los jóvenes no tengan que irse",
+          resumen: "El desarraigo de la juventud es nuestro mayor desafío. Oportunidades de estudio, trabajo y participación para que los pibes y las pibas elijan quedarse.",
           detalle: "Consejo de la Juventud con voz en las decisiones del municipio\nBecas y transporte para estudiar\nPrimer empleo en articulación con comercios y productores",
         },
         {
@@ -114,10 +115,10 @@ async function main() {
   await siVacia("Noticias", prisma.noticia.count(), () =>
     prisma.noticia.create({
       data: {
-        titulo: "Empieza la construcción del PAR en Los Charrúas",
+        titulo: "Lanzamos el PAR en Los Charrúas",
         categoria: "CONSTRUCCION",
         contenido:
-          "Un grupo de vecinos y vecinas de Los Charrúas decidió organizarse para construir el Peronismo Amplio Renovador en nuestro pueblo.\n\nLa idea es simple: recorrer cada barrio, escuchar y armar entre todos un proyecto que le devuelva la esperanza a nuestra comunidad.\n\n(Noticia de ejemplo: editala o borrala desde el panel.)",
+          "Con un acto en el Camping Municipal, el Peronismo Amplio Renovador presentó oficialmente su armado en Los Charrúas, bajo la conducción de José Scheifler, referente local y militante de la Unidad Básica 238.\n\nEl espacio se propone como una alternativa de renovación generacional dentro del justicialismo, enfocada en la organización comunitaria y la presencia directa en los barrios.\n\nComo carta de presentación, el equipo destacó la recuperación de la sede partidaria, que fue saneada y liberada de años de deudas históricas.\n\n(Revisá y completá esta nota desde el panel: fecha del acto, fotos y detalles.)",
       },
     }),
   );

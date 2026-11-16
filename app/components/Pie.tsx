@@ -29,8 +29,8 @@ export default function Pie() {
             <Marca claro grande />
             <p className="titular mt-8 text-4xl text-par-amarillo md:text-5xl">{SITIO.lema}</p>
             <p className="mt-4 max-w-sm text-white/65">
-              {SITIO.espacioCompleto} en {SITIO.localidad}, departamento {SITIO.departamento}. Construcción colectiva,
-              territorio y juventud para transformar nuestro pueblo.
+              {SITIO.espacioCompleto} en {SITIO.localidad}, departamento {SITIO.departamento}. Unidad Básica 238.
+              Renovación, territorio y juventud para poner primero a nuestro pueblo.
             </p>
           </div>
 
@@ -75,12 +75,12 @@ export default function Pie() {
               </ul>
             )}
             <a
-              href={SITIO.webProvincial}
+              href={SITIO.fichaProvincial}
               target="_blank"
               rel="noopener noreferrer"
               className="mt-6 block text-sm font-semibold text-par-celeste underline-offset-4 hover:underline"
             >
-              PAR en todo Entre Ríos ↗
+              Los Charrúas en la web del PAR Entre Ríos ↗
             </a>
           </div>
         </div>
