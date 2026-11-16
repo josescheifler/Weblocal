@@ -42,22 +42,39 @@ estado de cada mesa e incidencias. Puede corregir cualquier mesa, compararla con
 generar una clave nueva cierra las sesiones abiertas del fiscal, cada acción verifica permisos sobre la mesa en el servidor
 y las fotos de actas solo las ven el comando y el fiscal de esa mesa.
 
-## Puesta en marcha
+## Publicar en Vercel
+
+1. En [vercel.com](https://vercel.com) → **Add New… → Project** → importar el repositorio `Weblocal` de GitHub.
+   Vercel detecta Next.js solo; no hay que tocar el comando de build.
+2. **Antes de publicar**, en el proyecto → **Storage** → **Create Database** → **Prisma Postgres** (plan Free) y conectarla
+   al proyecto. Eso crea la variable `DATABASE_URL` automáticamente.
+3. En **Settings → Environment Variables** agregar:
+   - `ADMIN_PASSWORD`: la contraseña del panel.
+   - `SESSION_SECRET`: 32 caracteres o más al azar (por ejemplo, de un generador de contraseñas).
+   - `NEXT_PUBLIC_SITE_URL`: la dirección final (por ejemplo `https://par-los-charruas.vercel.app` o el dominio propio).
+   - Las opcionales de `.env.example` que quieran (WhatsApp, Instagram, teléfono del comando, Cloudinary).
+4. **Deploy**. En cada publicación se crean o actualizan solas las tablas de la base (migraciones; nunca se borran datos).
+5. Entrar a `/login` con la contraseña y, en el Resumen, tocar **Cargar contenido inicial** si quieren arrancar con el borrador.
+
+Cambios en las variables valen a partir de la siguiente publicación (**Deployments → Redeploy**).
+Para el día de la elección conviene usar la conexión "pooled" de Prisma Postgres: se copia desde la consola de Prisma
+(Vercel → Storage → la base → Open in Prisma) y se carga como `DATABASE_POOLED_URL`, sin tocar `DATABASE_URL`.
+El dominio propio se agrega en **Settings → Domains**.
+
+## Desarrollo local
 
 ```bash
 npm install
 cp .env.example .env      # y completar los valores
-npm run db:push           # crea las tablas en la base
-npm run sembrar           # (opcional) contenido inicial de ejemplo para editar
+npm run db:push           # crea las tablas (aplica las migraciones)
+npm run sembrar           # (opcional) contenido inicial de ejemplo
 npm run dev               # http://localhost:3000
 ```
 
 `npm run sembrar -- --fiscalizacion` además carga escuelas, mesas, listas y un fiscal **de prueba**
-(DNI 11111111, clave 123456) para practicar. Borralos desde el panel antes de la elección.
+(DNI 11111111, clave 123456) para practicar. No usarlo en la base real, o borrar esos datos desde el panel antes de la elección.
 
-Para publicarla sirve cualquier servicio que corra Next.js (Netlify, Vercel, un servidor propio con `npm run build && npm start`),
-más una base PostgreSQL propia (Neon, Supabase, Prisma Postgres, etc.). Se cargan las variables de `.env.example`
-y se corre una vez `npm run db:push` contra esa base.
+Si se cambia `prisma/schema.prisma`, crear una migración nueva con `npx prisma migrate dev --name descripcion`.
 
 ## Dónde cambiar textos fijos
 

@@ -4,10 +4,10 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "prisma generate && next build",
+    "build": "prisma generate && node scripts/migrar.mjs && next build",
     "start": "next start",
     "lint": "eslint",
-    "db:push": "prisma db push",
+    "db:push": "prisma migrate deploy",
     "sembrar": "node --experimental-strip-types scripts/sembrar.mts",
     "postinstall": "prisma generate || exit 0"
   },
@@ -39,5 +39,8 @@
     "prisma": "^7.10.1",
     "tailwindcss": "^4.3.3",
     "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=20.19"
   }
 }

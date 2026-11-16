@@ -3,6 +3,8 @@ import Link from "next/link";
 import { prisma } from "../../lib/prisma";
 import { fechaCorta } from "../../lib/formato";
 import { TituloPanel } from "../components/admin/Campos";
+import Formulario from "../components/admin/Formulario";
+import { cargarInicial } from "./acciones";
 
 function Acceso({ href, titulo, valor, detalle }: { href: string; titulo: string; valor: string | number; detalle?: string }) {
   return (
@@ -15,8 +17,11 @@ function Acceso({ href, titulo, valor, detalle }: { href: string; titulo: string
   );
 }
 
-async function Resumen() {
-  const [noticias, ultimaNoticia, candidatos, propuestas, hitos, voluntarios, sinContactar, quierenFiscal, mesas, fiscales, mesasConFiscal] =
+type Props = { searchParams: Promise<{ inicial?: string }> };
+
+async function Resumen({ searchParams }: Props) {
+  const { inicial } = await searchParams;
+  const [noticias, ultimaNoticia, candidatos, propuestas, hitos, voluntarios, sinContactar, quierenFiscal, mesas, fiscales, mesasConFiscal, indicadores] =
     await Promise.all([
       prisma.noticia.count(),
       prisma.noticia.findFirst({ orderBy: { createdAt: "desc" }, select: { createdAt: true } }),
@@ -29,12 +34,31 @@ async function Resumen() {
       prisma.mesa.count(),
       prisma.fiscal.count({ where: { activo: true } }),
       prisma.mesa.count({ where: { fiscalId: { not: null } } }),
+      prisma.indicador.count(),
     ]);
+  const faltaContenido = noticias === 0 || propuestas === 0 || hitos.length === 0 || indicadores === 0;
   const hechos = hitos.find((h) => h.estado === "HECHO")?._count ?? 0;
   const totalHitos = hitos.reduce((n, h) => n + h._count, 0);
 
   return (
     <div className="space-y-8">
+      {inicial && (
+        <p role="status" className="rounded-2xl border border-emerald-200 bg-emerald-50 p-4 font-semibold text-emerald-800">
+          ✓ Contenido inicial cargado. Revisalo en Construcción, Propuestas y Noticias y editalo a gusto.
+        </p>
+      )}
+      {faltaContenido && (
+        <section className="rounded-2xl border-2 border-dashed border-par-celeste bg-white p-6">
+          <h2 className="font-display text-2xl font-bold uppercase text-par-tinta">¿Arrancamos con un borrador?</h2>
+          <p className="mb-4 mt-1 max-w-2xl text-slate-600">
+            Carga una hoja de ruta (con la recuperación de la UB 238 y el lanzamiento en el Camping Municipal), los números del
+            armado, seis propuestas de base y la noticia del lanzamiento. Solo completa lo que esté vacío y después se edita todo.
+          </p>
+          <Formulario accion={cargarInicial} textoBoton="Cargar contenido inicial" textoEnviando="Cargando…">
+            {null}
+          </Formulario>
+        </section>
+      )}
       <section>
         <h2 className="mb-3 font-display text-xl font-bold uppercase tracking-wider text-slate-500">Sitio público</h2>
         <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-3">
@@ -66,12 +90,12 @@ async function Resumen() {
   );
 }
 
-export default function AdminInicio() {
+export default function AdminInicio({ searchParams }: Props) {
   return (
     <>
       <TituloPanel titulo="Panel de control" bajada="PAR Los Charrúas: contenido del sitio y sistema de fiscalización." />
       <Suspense fallback={<div className="h-96 animate-pulse rounded-2xl bg-slate-200" />}>
-        <Resumen />
+        <Resumen searchParams={searchParams} />
       </Suspense>
     </>
   );

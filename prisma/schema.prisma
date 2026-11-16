@@ -86,6 +86,15 @@ model Voluntario {
   createdAt   DateTime @default(now())
 }
 
+// Intentos fallidos de entrar al panel (para frenar a quien intente adivinar la contraseña)
+model IntentoAcceso {
+  id        String   @id @default(cuid())
+  clave     String // dirección IP
+  createdAt DateTime @default(now())
+
+  @@index([clave, createdAt])
+}
+
 // ─────────────────────────────────────────────────────────────
 // FISCALIZACIÓN
 // ─────────────────────────────────────────────────────────────

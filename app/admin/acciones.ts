@@ -5,6 +5,7 @@ import { refresh } from "next/cache";
 import { prisma } from "../../lib/prisma";
 import { exigirAdmin } from "../../lib/sesion";
 import type { EstadoFormulario } from "../../lib/formularios";
+import { cargarContenidoInicial } from "../../lib/contenidoInicial";
 import {
   esNoEncontrado,
   validarCandidato,
@@ -152,4 +153,12 @@ export async function borrarVoluntario(form: FormData) {
   await exigirAdmin();
   await prisma.voluntario.deleteMany({ where: { id: idDe(form) } });
   refresh();
+}
+
+// ── Contenido inicial ────────────────────────────────────────
+
+export async function cargarInicial(): Promise<EstadoFormulario> {
+  await exigirAdmin();
+  await cargarContenidoInicial(prisma);
+  redirect("/admin?inicial=1");
 }
