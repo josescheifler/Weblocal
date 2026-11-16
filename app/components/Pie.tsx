@@ -74,14 +74,6 @@ export default function Pie() {
                 ))}
               </ul>
             )}
-            <a
-              href={SITIO.fichaProvincial}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="mt-6 block text-sm font-semibold text-par-celeste underline-offset-4 hover:underline"
-            >
-              Los Charrúas en la web del PAR Entre Ríos ↗
-            </a>
           </div>
         </div>
 

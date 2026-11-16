@@ -1,7 +1,8 @@
 # PAR Los Charrúas
 
-Web local del **Peronismo Amplio Renovador** en Los Charrúas (departamento Concordia, Entre Ríos).
-Usa la misma estética y tecnología que la web provincial del PAR (Next.js 16 + Prisma 7 + PostgreSQL + Tailwind 4).
+Sitio web propio del **Peronismo Amplio Renovador** en Los Charrúas (departamento Concordia, Entre Ríos).
+Es una web independiente (su propia base de datos, su propio panel y su propio dominio). Comparte con la web
+provincial solo la identidad visual del PAR y la tecnología (Next.js 16 + Prisma 7 + PostgreSQL + Tailwind 4).
 
 ## Secciones públicas
 
@@ -54,11 +55,13 @@ npm run dev               # http://localhost:3000
 `npm run sembrar -- --fiscalizacion` además carga escuelas, mesas, listas y un fiscal **de prueba**
 (DNI 11111111, clave 123456) para practicar. Borralos desde el panel antes de la elección.
 
-Para publicar en Netlify (igual que la web provincial): conectar el repositorio, comando de build `npm run build`,
-y cargar las variables de `.env.example` en la configuración del sitio.
+Para publicarla sirve cualquier servicio que corra Next.js (Netlify, Vercel, un servidor propio con `npm run build && npm start`),
+más una base PostgreSQL propia (Neon, Supabase, Prisma Postgres, etc.). Se cargan las variables de `.env.example`
+y se corre una vez `npm run db:push` contra esa base.
 
 ## Dónde cambiar textos fijos
 
-- `lib/sitio.ts`: nombre de la localidad, lema, bajada del inicio, pilares, menú, redes.
+- `lib/sitio.ts`: nombre de la localidad, lema, bajada del inicio, historia, referente, pilares, menú, redes.
+- `public/fotos/`: foto del referente y foto del equipo (se reemplazan por archivos con el mismo nombre).
 - `lib/contenido.ts`: ejes de propuestas y cargos sugeridos.
 - `lib/fiscalizacion.ts`: tipos de incidencia y estados de mesa.

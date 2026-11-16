@@ -11,27 +11,23 @@ export const SITIO = {
   // Bajada del inicio
   bajada:
     "Familias rurales, comerciantes, productores y jóvenes que nos organizamos para poner primero a Los Charrúas: menos política de escritorio, más presencia en cada barrio.",
-  // Enlace a la web provincial del PAR
-  webProvincial: "https://parentrerios.netlify.app",
-  // Ficha de Los Charrúas en la web provincial
-  fichaProvincial: "https://parentrerios.netlify.app/localidades/cmvpry1io0000owur4or7zu64",
   // Contacto (dejar vacío lo que no se use)
   whatsapp: process.env.NEXT_PUBLIC_WHATSAPP || "", // solo números, con código de país. Ej: 5493454000000
   instagram: process.env.NEXT_PUBLIC_INSTAGRAM || "", // enlace completo
   facebook: process.env.NEXT_PUBLIC_FACEBOOK || "", // enlace completo
 } as const;
 
-export const URL_SITIO = (process.env.NEXT_PUBLIC_SITE_URL || "https://parloscharruas.netlify.app").replace(/\/$/, "");
+export const URL_SITIO = (process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/$/, "");
 
-/** Conducción local (datos tomados de la ficha de Los Charrúas en la web provincial) */
+/** Conducción local */
 export const REFERENTE = {
   nombre: "José Scheifler",
   rol: "Referente local · Unidad Básica 238",
-  foto: "https://res.cloudinary.com/cyj3xo7a/image/upload/v1793050439/i8xjlfbh6rmvkp8vdj8u.jpg",
+  foto: "/fotos/referente.webp", // acto de lanzamiento en el Camping Municipal
   cita: "Nace una esperanza no significa quedarnos esperando a que las cosas cambien solas o lleguen tiempos mejores. Es hacer exactamente lo que hicieron nuestros viejos y abuelos: lavarnos la cara, darnos aliento, salir bien temprano de casa y ponernos el trabajo al hombro. Así se levantó este pueblo y de esa misma manera vamos a poner primero a Los Charrúas.",
 } as const;
 
-export const FOTO_GRUPAL = "https://res.cloudinary.com/cyj3xo7a/image/upload/v1793050430/acqs6g9yw7qlimujjg1k.jpg";
+export const FOTO_GRUPAL = "/fotos/equipo.webp";
 
 /** "Así construimos en Los Charrúas" */
 export const HISTORIA = [

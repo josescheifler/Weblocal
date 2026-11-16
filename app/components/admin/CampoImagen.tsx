@@ -6,8 +6,9 @@ import { useMontado } from "../../../lib/useMontado";
 import { urlSubida } from "../../../lib/cliente";
 import { claseCampo } from "./Campos";
 
-const NUBE = process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME;
-const PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "par_uploads";
+// Solo se usa Cloudinary si están configurados la cuenta y el preset
+const NUBE = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET ? process.env.NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME : "";
+const PRESET = process.env.NEXT_PUBLIC_CLOUDINARY_UPLOAD_PRESET || "";
 
 /** Imagen por enlace, con botón para subirla a Cloudinary si está configurado. */
 export default function CampoImagen({
