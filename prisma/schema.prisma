@@ -1,0 +1,210 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+// ─────────────────────────────────────────────────────────────
+// CONTENIDO PÚBLICO
+// ─────────────────────────────────────────────────────────────
+
+model Noticia {
+  id           String   @id @default(cuid())
+  titulo       String
+  categoria    String // ver CATEGORIAS en lib/noticias.ts
+  contenido    String
+  imagenUrl    String?
+  // Solo para notas de otros medios (categoria "MEDIOS")
+  fuenteNombre String?
+  fuenteUrl    String?
+  createdAt    DateTime @default(now()) // también es la fecha que se muestra; se puede elegir desde el panel
+  updatedAt    DateTime @updatedAt
+}
+
+model Candidato {
+  id        String   @id @default(cuid())
+  nombre    String
+  cargo     String // "Presidente Municipal", "Concejal", "Concejal suplente", etc.
+  orden     Int      @default(0) // posición en la lista (1, 2, 3...)
+  fotoUrl   String?
+  bio       String?
+  cita      String?
+  instagram String?
+  facebook  String?
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+model Propuesta {
+  id        String   @id @default(cuid())
+  eje       String // icono/eje temático: ver EJES en lib/contenido.ts
+  titulo    String
+  resumen   String
+  detalle   String? // una medida por línea
+  orden     Int      @default(0)
+  activo    Boolean  @default(true)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// "Cómo viene la construcción": hitos de la línea de tiempo
+model Hito {
+  id          String    @id @default(cuid())
+  titulo      String
+  descripcion String?
+  fecha       DateTime?
+  estado      String    @default("PROXIMO") // HECHO | EN_CURSO | PROXIMO
+  orden       Int       @default(0)
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+}
+
+// "Cómo viene la construcción": números del armado (con meta opcional para mostrar avance)
+model Indicador {
+  id        String   @id @default(cuid())
+  etiqueta  String
+  valor     Int      @default(0)
+  meta      Int?
+  orden     Int      @default(0)
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}
+
+// Vecinos que se suman desde el sitio (y los que se ofrecen como fiscales)
+model Voluntario {
+  id          String   @id @default(cuid())
+  nombre      String
+  telefono    String
+  dni         String?
+  barrio      String?
+  mensaje     String?
+  quiereFiscal Boolean @default(false)
+  contactado  Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}
+
+// ─────────────────────────────────────────────────────────────
+// FISCALIZACIÓN
+// ─────────────────────────────────────────────────────────────
+
+model Escuela {
+  id        String    @id @default(cuid())
+  nombre    String
+  direccion String?
+  orden     Int       @default(0)
+  mesas     Mesa[]
+  generales Fiscal[]  @relation("FiscalGeneralEscuela")
+  incidencias Incidencia[]
+  createdAt DateTime  @default(now())
+}
+
+model Mesa {
+  id            String    @id @default(cuid())
+  numero        String    @unique
+  escuelaId     String
+  escuela       Escuela   @relation(fields: [escuelaId], references: [id], onDelete: Cascade)
+  electores     Int? // electores habilitados según el padrón
+  estado        String    @default("SIN_ABRIR") // SIN_ABRIR | ABIERTA | CERRADA | ESCRUTADA
+  votantes      Int? // cantidad de sobres / personas que votaron (dato del acta)
+  observaciones String?
+  verificada    Boolean   @default(false) // revisada por el comando central
+  escrutadaAt   DateTime?
+  fiscalId      String?
+  fiscal        Fiscal?   @relation("FiscalDeMesa", fields: [fiscalId], references: [id], onDelete: SetNull)
+  votos         VotoMesa[]
+  participaciones Participacion[]
+  incidencias   Incidencia[]
+  foto          FotoActa?
+  updatedAt     DateTime  @updatedAt
+}
+
+// Foto del acta / certificado de escrutinio. "url" es un enlace https (Cloudinary)
+// o la imagen comprimida en formato data:image/jpeg;base64 cuando no hay Cloudinary.
+model FotoActa {
+  id        String   @id @default(cuid())
+  mesaId    String   @unique
+  mesa      Mesa     @relation(fields: [mesaId], references: [id], onDelete: Cascade)
+  url       String
+  createdAt DateTime @default(now())
+}
+
+model Fiscal {
+  id              String    @id @default(cuid())
+  nombre          String
+  dni             String    @unique
+  telefono        String?
+  rol             String    @default("MESA") // MESA | GENERAL
+  escuelaId       String? // solo para fiscales generales
+  escuela         Escuela?  @relation("FiscalGeneralEscuela", fields: [escuelaId], references: [id], onDelete: SetNull)
+  mesas           Mesa[]    @relation("FiscalDeMesa")
+  claveHash       String
+  claveSalt       String
+  sesionVersion   Int       @default(1) // al cambiar la clave se cierran las sesiones abiertas
+  intentosFallidos Int      @default(0)
+  bloqueadoHasta  DateTime?
+  ultimoIngreso   DateTime?
+  activo          Boolean   @default(true)
+  incidencias     Incidencia[]
+  participaciones Participacion[]
+  createdAt       DateTime  @default(now())
+}
+
+// Agrupaciones que compiten (la nuestra se marca como propia)
+model Lista {
+  id      String  @id @default(cuid())
+  numero  String
+  nombre  String
+  propia  Boolean @default(false)
+  color   String?
+  orden   Int     @default(0)
+}
+
+// Categorías que se votan en la misma boleta (Presidente Municipal, Concejales, etc.)
+model Cargo {
+  id     String @id @default(cuid())
+  nombre String
+  orden  Int    @default(0)
+  votos  VotoMesa[]
+}
+
+// Votos de una mesa para un cargo. "clave" es el id de la Lista, o BLANCO | NULO | RECURRIDO | IMPUGNADO
+model VotoMesa {
+  id       String @id @default(cuid())
+  mesaId   String
+  mesa     Mesa   @relation(fields: [mesaId], references: [id], onDelete: Cascade)
+  cargoId  String
+  cargo    Cargo  @relation(fields: [cargoId], references: [id], onDelete: Cascade)
+  clave    String
+  cantidad Int
+
+  @@unique([mesaId, cargoId, clave])
+}
+
+// Reportes de "cuántos votaron hasta ahora" durante la jornada
+model Participacion {
+  id        String   @id @default(cuid())
+  mesaId    String
+  mesa      Mesa     @relation(fields: [mesaId], references: [id], onDelete: Cascade)
+  fiscalId  String?
+  fiscal    Fiscal?  @relation(fields: [fiscalId], references: [id], onDelete: SetNull)
+  cantidad  Int
+  createdAt DateTime @default(now())
+}
+
+model Incidencia {
+  id          String   @id @default(cuid())
+  mesaId      String?
+  mesa        Mesa?    @relation(fields: [mesaId], references: [id], onDelete: SetNull)
+  escuelaId   String?
+  escuela     Escuela? @relation(fields: [escuelaId], references: [id], onDelete: SetNull)
+  fiscalId    String?
+  fiscal      Fiscal?  @relation(fields: [fiscalId], references: [id], onDelete: SetNull)
+  tipo        String // ver TIPOS_INCIDENCIA en lib/fiscalizacion.ts
+  gravedad    String   @default("MEDIA") // BAJA | MEDIA | ALTA
+  descripcion String
+  resuelta    Boolean  @default(false)
+  createdAt   DateTime @default(now())
+}

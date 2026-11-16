@@ -1,0 +1,148 @@
+@import "tailwindcss";
+
+@theme {
+  /* Colores de marca, tomados del logo */
+  --color-par-celeste: #35b4e5;
+  --color-par-celeste-oscuro: #0b6e9a; /* para texto y botones sobre fondo claro (contraste AA) */
+  --color-par-amarillo: #ffc000;
+  --color-par-sol: #f5c518;
+  --color-par-tinta: #073f55; /* celeste profundo: el celeste de la marca oscurecido (mismo tono), para fondos y textos */
+  --color-par-tinta-2: #0a5b7b;
+  --color-par-papel: #f6f4ef; /* blanco cálido de fondo */
+
+  --font-display: "Barlow Condensed", "Arial Narrow", "Helvetica Neue", sans-serif;
+  --font-sans: "Public Sans Variable", "Public Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  --animate-girar: girar 140s linear infinite;
+  --animate-aparecer: aparecer 0.9s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+  --animate-desfile: desfile 40s linear infinite;
+
+  @keyframes desfile {
+    to {
+      transform: translateX(-50%);
+    }
+  }
+
+  @keyframes girar {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+  @keyframes aparecer {
+    from {
+      opacity: 0;
+      transform: translateY(24px);
+    }
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+}
+
+@layer base {
+  html {
+    scroll-behavior: smooth;
+    -webkit-text-size-adjust: 100%;
+  }
+  body {
+    background: var(--color-par-papel);
+    color: var(--color-par-tinta);
+    font-family: var(--font-sans);
+    text-rendering: optimizeLegibility;
+  }
+  ::selection {
+    background: var(--color-par-amarillo);
+    color: var(--color-par-tinta);
+  }
+  :focus-visible {
+    outline: 3px solid var(--color-par-amarillo);
+    outline-offset: 3px;
+    border-radius: 4px;
+  }
+  [id] {
+    scroll-margin-top: 6rem;
+  }
+}
+
+@layer components {
+  /* Títulos de impacto: condensados, en mayúsculas */
+  .titular {
+    font-family: var(--font-display);
+    font-weight: 800;
+    text-transform: uppercase;
+    line-height: 0.92;
+    letter-spacing: -0.01em;
+  }
+
+  /* Rótulo chico arriba de cada sección */
+  .antetitulo {
+    font-family: var(--font-display);
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-size: 0.95rem;
+    display: inline-flex;
+    align-items: center;
+    gap: 0.75rem;
+  }
+  .antetitulo::before {
+    content: "";
+    width: 2.25rem;
+    height: 3px;
+    background: currentColor;
+  }
+
+  /* Franja celeste-blanco-amarillo inspirada en la bandera */
+  .franja {
+    height: 6px;
+    background: linear-gradient(
+      90deg,
+      var(--color-par-celeste) 0 33.33%,
+      #fff 33.33% 66.66%,
+      var(--color-par-amarillo) 66.66% 100%
+    );
+  }
+
+  /* Texto de artículos */
+  .prosa {
+    font-size: 1.15rem;
+    line-height: 1.8;
+    white-space: pre-wrap;
+    overflow-wrap: anywhere;
+  }
+  .prosa::first-letter {
+    font-family: var(--font-display);
+    font-weight: 800;
+    float: left;
+    font-size: 4.6rem;
+    line-height: 0.85;
+    padding: 0.35rem 0.6rem 0 0;
+    color: var(--color-par-celeste-oscuro);
+  }
+}
+
+/* Aparición suave al hacer scroll (solo navegadores que lo soportan) */
+@supports (animation-timeline: view()) {
+  .revelar {
+    animation: aparecer linear both;
+    animation-timeline: view();
+    animation-range: entry 0% entry 35%;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+  .revelar {
+    animation: none !important;
+  }
+}
